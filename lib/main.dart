@@ -11,9 +11,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Personal Expenses',
       theme: ThemeData(
-          primarySwatch: Colors.purple,
-          accentColor: Colors.amber,
-          fontFamily: 'Quicksand'),
+        primarySwatch: Colors.purple,
+        accentColor: Colors.amber,
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+            headline6: TextStyle(
+                fontFamily: 'OpenSans',
+                fontWeight: FontWeight.bold,
+                fontSize: 18)),
+        appBarTheme: AppBarTheme(
+            textTheme: ThemeData.light().textTheme.copyWith(
+                headline6: TextStyle(fontFamily: 'OpenSans', fontSize: 20))),
+      ),
       home: MyHomePage(),
     );
   }
@@ -26,13 +35,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [
-    Transaction(
-      id: "t1",
-      price: 99.99,
-      title: "New Shoes",
-      date: DateTime.now(),
-    ),
-    Transaction(id: "t2", title: "New Book", price: 45.55, date: DateTime.now())
+    // Transaction(
+    //   id: "t1",
+    //   price: 99.99,
+    //   title: "New Shoes",
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(id: "t2", title: "New Book", price: 45.55, date: DateTime.now())
   ];
 
   void addNewTransaction(String txtitle, double amount) {
@@ -64,7 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(
           'Personal Expenses',
-          style: TextStyle(fontFamily: 'OpenSans'),
         ),
         actions: <Widget>[
           IconButton(
