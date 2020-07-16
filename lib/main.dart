@@ -14,12 +14,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
         accentColor: Colors.amber,
+        //errorColor: Colors.redAccent,
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
             headline6: TextStyle(
                 fontFamily: 'OpenSans',
                 fontWeight: FontWeight.bold,
-                fontSize: 18)),
+                fontSize: 18),
+            button: TextStyle(color: Colors.white)),
         appBarTheme: AppBarTheme(
             textTheme: ThemeData.light().textTheme.copyWith(
                 headline6: TextStyle(fontFamily: 'OpenSans', fontSize: 20))),
@@ -55,11 +57,11 @@ class _MyHomePageState extends State<MyHomePage> {
     ).toList();
   }
 
-  void addNewTransaction(String txtitle, double amount) {
+  void addNewTransaction(String txtitle, double amount, DateTime chosenDate) {
     final newTx = Transaction(
         title: txtitle,
         price: amount,
-        date: DateTime.now(),
+        date: chosenDate,
         id: DateTime.now().toString());
     setState(() {
       _userTransactions.add(newTx);
@@ -76,6 +78,14 @@ class _MyHomePageState extends State<MyHomePage> {
             behavior: HitTestBehavior.opaque);
       },
     );
+  }
+
+  void removeTransactions(String id) {
+    setState(() {
+      _userTransactions.removeWhere((tx) {
+        return tx.id == id;
+      });
+    });
   }
 
   @override
@@ -97,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Chart(recentTransactions),
-            TransactionList(_userTransactions)
+            TransactionList(_userTransactions, removeTransactions)
           ],
         ),
       ),
