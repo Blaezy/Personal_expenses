@@ -68,6 +68,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  bool Showchart = false;
+
   void startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
       context: ctx,
@@ -90,24 +92,63 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Personal Expenses',
-        ),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () => startAddNewTransaction(context))
-        ],
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final appBar = AppBar(
+      //declaring this as variable as we need to get height information of the appbar widget
+      title: Text(
+        'Personal Expenses',
       ),
+      actions: <Widget>[
+        IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => startAddNewTransaction(context))
+      ],
+    );
+    final txListWidget = Container(
+        height: (MediaQuery.of(context).size.height -
+                appBar.preferredSize.height -
+                mediaQuery.padding.top) *
+            0.8,
+        child: TransactionList(_userTransactions, removeTransactions));
+    return Scaffold(
+      appBar: appBar, //assigning variable to appBar
       body: SingleChildScrollView(
         child: Column(
           //mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(recentTransactions),
-            TransactionList(_userTransactions, removeTransactions)
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('Show Chart'),
+                  Switch(
+                      value: Showchart,
+                      onChanged: (val) {
+                        setState(() {
+                          Showchart = val;
+                        });
+                      }),
+                ],
+              ),
+            if (!isLandscape)
+              Container(
+                  height: (MediaQuery.of(context).size.height -
+                          appBar.preferredSize.height -
+                          mediaQuery.padding.top) *
+                      0.2,
+                  child: Chart(recentTransactions)),
+            if (!isLandscape) txListWidget,
+            if (isLandscape)
+              Showchart
+                  ? Container(
+                      height: (MediaQuery.of(context).size.height -
+                              appBar.preferredSize.height -
+                              mediaQuery.padding.top) *
+                          0.8,
+                      child: Chart(recentTransactions))
+                  : txListWidget
           ],
         ),
       ),
